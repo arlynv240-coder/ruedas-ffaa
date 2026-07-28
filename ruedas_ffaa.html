@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Ruedas de Atributos · FF.AA. del Ecuador</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg: #0e1620;
+    --bg-panel: #16212e;
+    --bg-panel-2: #1c2a3a;
+    --line: #2a3a4c;
+    --gold: #c9a24d;
+    --gold-dim: #8a7238;
+    --ink: #eef1ef;
+    --ink-dim: #9fb0bd;
+    --ejercito: #6f7f4a;
+    --ejercito-dk: #3d4527;
+    --armada: #2e6ba8;
+    --armada-dk: #17324f;
+    --aerea: #4a9fd6;
+    --aerea-dk: #204a63;
+    --tropa-a: #5c6672;
+    --tropa-b: #8b97a3;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;}
+  .wrap{max-width:1180px;margin:0 auto;padding:36px 20px 60px;}
+
+  .masthead{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:28px;
+    flex-wrap:wrap;gap:12px;
+  }
+  .masthead .eyebrow{
+    font-family:'Oswald',sans-serif;letter-spacing:.22em;text-transform:uppercase;
+    font-size:11px;color:var(--gold);margin:0 0 6px;
+  }
+  .masthead h1{
+    font-family:'Oswald',sans-serif;font-weight:600;font-size:30px;letter-spacing:.01em;
+    margin:0;color:var(--ink);
+  }
+  .masthead .sub{color:var(--ink-dim);font-size:13px;margin-top:6px;max-width:560px;}
+
+  .tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+  .tab{
+    font-family:'Oswald',sans-serif;letter-spacing:.08em;text-transform:uppercase;
+    font-size:13px;padding:10px 18px;border:1px solid var(--line);background:var(--bg-panel);
+    color:var(--ink-dim);cursor:pointer;transition:all .15s ease;border-radius:2px;
+  }
+  .tab .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;vertical-align:middle;}
+  .tab[data-force="ejercito"] .dot{background:var(--ejercito);}
+  .tab[data-force="armada"] .dot{background:var(--armada);}
+  .tab[data-force="aerea"] .dot{background:var(--aerea);}
+  .tab:hover{color:var(--ink);border-color:var(--gold-dim);}
+  .tab.active{color:var(--bg);background:var(--gold);border-color:var(--gold);}
+
+  .legend{display:flex;gap:18px;margin-bottom:24px;flex-wrap:wrap;}
+  .legend span{font-size:11px;color:var(--ink-dim);letter-spacing:.05em;text-transform:uppercase;font-family:'Oswald',sans-serif;}
+  .legend .sw{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-2px;}
+
+  .leadership-block{
+    background:var(--bg-panel);border:1px solid var(--line);border-left:3px solid var(--gold);
+    border-radius:4px;padding:18px 24px;margin-bottom:26px;
+  }
+  .leadership-text{font-size:14px;line-height:1.65;color:var(--ink-dim);margin:0;}
+  .leadership-text strong{color:var(--gold);font-weight:600;}
+
+  .stage{
+    display:grid;grid-template-columns:460px 1fr;gap:36px;align-items:start;
+  }
+  @media (max-width:800px){ .stage{grid-template-columns:1fr;} }
+
+  .wheel-box{
+    background:radial-gradient(circle at 50% 42%, var(--bg-panel-2), var(--bg-panel) 70%);
+    border:1px solid var(--line);border-radius:6px;padding:20px;
+  }
+  .wheel-box svg{width:100%;height:auto;display:block;}
+  .seg{cursor:pointer;transition:opacity .15s ease, filter .15s ease;stroke:var(--bg);stroke-width:1.5;}
+  .seg:hover{filter:brightness(1.22);}
+  .seg.selected{filter:brightness(1.35);stroke:var(--gold);stroke-width:2.5;}
+  .seg-label{font-family:'Oswald',sans-serif;font-size:9.6px;fill:var(--ink);pointer-events:none;text-transform:uppercase;letter-spacing:.01em;}
+  .center-label{font-family:'Oswald',sans-serif;fill:var(--gold);text-transform:uppercase;letter-spacing:.12em;}
+  .center-sub{font-family:'Inter',sans-serif;fill:var(--ink-dim);}
+
+  .panel{
+    background:var(--bg-panel);border:1px solid var(--line);border-radius:6px;
+    padding:28px 30px;min-height:460px;
+  }
+  .badge-wrap{display:flex;justify-content:center;align-items:center;margin-bottom:16px;}
+  .badge-wrap svg{display:block;filter:drop-shadow(0 3px 6px rgba(0,0,0,.4));}
+  .panel .rank-eyebrow{
+    font-family:'Oswald',sans-serif;letter-spacing:.18em;text-transform:uppercase;
+    font-size:11px;color:var(--ink-dim);margin:0 0 4px;text-align:center;
+  }
+  .panel h2{
+    font-family:'Oswald',sans-serif;font-weight:600;font-size:26px;margin:0 0 4px;
+    text-align:center;
+  }
+  .panel .tier{
+    font-size:12px;color:var(--gold);margin:0 0 20px;letter-spacing:.03em;text-align:center;
+  }
+  .block-title{
+    font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-dim);margin:18px 0 8px;padding-left:18px;
+  }
+  .funcion{
+    padding-left:18px;padding-right:18px;font-size:15px;line-height:1.55;color:var(--ink);
+  }
+  ol.resp{margin:0;padding:0 18px 0 34px;}
+  ol.resp li{font-size:14px;line-height:1.55;color:var(--ink);margin-bottom:7px;padding-left:2px;}
+  .empty{
+    display:flex;align-items:center;justify-content:center;height:100%;min-height:380px;
+    color:var(--ink-dim);font-size:14px;text-align:center;padding:0 30px;
+  }
+
+  .table2-note{
+    margin-top:34px;font-size:12px;color:var(--ink-dim);border-top:1px solid var(--line);
+    padding-top:14px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div>
+      <p class="eyebrow">Rangos y funciones · Oficiales y Tropa</p>
+      <h1>Ruedas de Atributos — FF.AA. del Ecuador</h1>
+      <p class="sub">Selecciona una fuerza y luego un grado en la rueda para ver su insignia, función detallada y responsabilidades, desde Oficiales Generales hasta Tropa.</p>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-force="ejercito"><span class="dot"></span>Fuerza Terrestre</button>
+    <button class="tab" data-force="armada"><span class="dot"></span>Fuerza Naval</button>
+    <button class="tab" data-force="aerea"><span class="dot"></span>Fuerza Aérea</button>
+  </div>
+
+  <div class="legend">
+    <span><span class="sw" style="background:var(--gold);"></span>Oficiales (Generales · Superiores · Subalternos)</span>
+    <span><span class="sw" style="background:var(--tropa-b);"></span>Tropa y Suboficiales (Suboficial Mayor a Soldado/Marinero)</span>
+  </div>
+
+  <div class="leadership-block">
+    <p class="block-title" style="padding-left:0;margin-top:0;">Liderazgo militar y cadena de mando</p>
+    <p class="leadership-text">
+      El liderazgo militar es la capacidad de un grado para dirigir, formar y responder por el personal bajo su autoridad dentro de una <strong>cadena de mando</strong> jerárquica: cada rango recibe órdenes del grado inmediato superior y, a la vez, ejerce mando directo sobre uno o más grados subordinados. A mayor jerarquía, el liderazgo se ejerce sobre unidades más grandes y con un enfoque más estratégico (planificación, doctrina, administración de recursos); en los grados intermedios el liderazgo se centra en la conducción táctica de compañías, escuadrones o buques; y en la tropa y suboficiales el liderazgo es directo y cercano, enfocado en la instrucción, disciplina y bienestar de los subordinados inmediatos. Esta relación de mando y obediencia —autoridad hacia abajo, responsabilidad hacia arriba— es la que articula toda la estructura de las Fuerzas Armadas y se refleja en la función y responsabilidades descritas para cada grado en la rueda de atributos.
+    </p>
+  </div>
+
+  <div class="stage">
+    <div class="wheel-box"><svg id="wheel" viewBox="0 0 460 460"></svg></div>
+    <div class="panel" id="panel">
+      <div class="empty">Haz clic en un grado de la rueda para ver su insignia, función y responsabilidades.</div>
+    </div>
+  </div>
+
+  <p class="table2-note">Fuente de grados: Tabla 2 — Grados de oficiales y tropa de las FF.AA. (Fuerza Terrestre, Fuerza Naval, Fuerza Aérea). Las insignias mostradas son representaciones esquemáticas propias (estrellas, barras y galones) que siguen la lógica jerárquica de cada fuerza; funciones y responsabilidades elaboradas según la estructura de mando estándar, de mayor a menor grado.</p>
+</div>
+
+<script>
+const DATA = {
+  ejercito: {
+    label: "Fuerza Terrestre",
+    color: "#6f7f4a", colorDk: "#3d4527",
+    ranks: [
+      {name:"General de Ejército", tier:"Oficial General", ins:{cat:"general",n:3},
+        funcion:"Comandante en Jefe operativo del Ejército; máxima autoridad castrense terrestre. Dirige la totalidad de las fuerzas terrestres del país, define la estrategia de largo plazo y responde directamente ante el Mando Conjunto de las FF.AA.",
+        resp:["Dirigir la estrategia militar terrestre nacional","Asesorar al mando conjunto de las FF.AA. en materia terrestre","Supervisar la doctrina y modernización del Ejército","Representar institucionalmente al Ejército ante el Estado y el exterior","Administrar los recursos humanos y logísticos de más alto nivel"]},
+      {name:"General de División", tier:"Oficial General", ins:{cat:"general",n:2},
+        funcion:"Comandante de una división o jefatura de alto mando. Conduce simultáneamente varias brigadas, articula la estrategia terrestre a nivel regional y traduce la política militar en planes de campaña.",
+        resp:["Planificar operaciones a nivel de división","Coordinar entre brigadas subordinadas","Supervisar el cumplimiento de directivas del alto mando","Gestionar el desarrollo profesional de oficiales superiores","Evaluar la capacidad operativa de las unidades a su cargo"]},
+      {name:"General de Brigada", tier:"Oficial General", ins:{cat:"general",n:1},
+        funcion:"Comandante de brigada, unidad táctica intermedia compuesta por varios regimientos o batallones. Traduce las directrices divisionarias en órdenes operativas concretas y sostiene el alistamiento permanente de su unidad.",
+        resp:["Dirigir el entrenamiento y alistamiento de la brigada","Ejecutar órdenes operativas del mando divisionario","Administrar recursos logísticos de la brigada","Supervisar a los comandantes de regimiento o batallón","Mantener la disciplina y el bienestar del personal de la brigada"]},
+      {name:"Coronel", tier:"Oficial Superior", ins:{cat:"superior",n:3},
+        funcion:"Comandante de regimiento o jefe de gran unidad menor / estado mayor. Dirige entre 500 y 1000 efectivos, coordina con unidades vecinas y de apoyo, y responde por la operatividad integral de su regimiento.",
+        resp:["Comandar un regimiento o unidad equivalente","Planificar y ejecutar operaciones tácticas","Supervisar la instrucción de oficiales subalternos","Administrar el presupuesto y la logística de la unidad","Reportar el estado operativo al mando superior"]},
+      {name:"Teniente Coronel", tier:"Oficial Superior", ins:{cat:"superior",n:2},
+        funcion:"Segundo comandante de regimiento o jefe de batallón. Actúa como enlace operativo entre el coronel y los jefes de compañía, asumiendo el mando en ausencia del comandante titular.",
+        resp:["Apoyar al coronel en la conducción del regimiento","Comandar un batallón u organismo similar","Coordinar la instrucción táctica de las compañías","Supervisar la disciplina de las unidades subordinadas","Elaborar planes operativos de mediano alcance"]},
+      {name:"Mayor", tier:"Oficial Superior", ins:{cat:"superior",n:1},
+        funcion:"Jefe de batallón o de estado mayor de unidad. Supervisa la planificación logística, el abastecimiento y el entrenamiento de varias compañías bajo su mando.",
+        resp:["Comandar o asistir en el mando de un batallón","Coordinar la logística y el abastecimiento de la unidad","Supervisar a los capitanes de compañía","Planificar ejercicios de entrenamiento","Controlar el cumplimiento de protocolos operativos"]},
+      {name:"Capitán", tier:"Oficial Subalterno", ins:{cat:"subalterno",n:3},
+        funcion:"Comandante de compañía (aproximadamente 100 a 150 efectivos). Es responsable directo de la operatividad diaria, la disciplina y el bienestar de su tropa en el terreno.",
+        resp:["Comandar una compañía (aprox. 100-150 efectivos)","Planificar y dirigir el entrenamiento de la tropa","Administrar los recursos y el equipo de la compañía","Evaluar el desempeño de tenientes y subtenientes","Ejecutar órdenes tácticas en el terreno"]},
+      {name:"Teniente", tier:"Oficial Subalterno", ins:{cat:"subalterno",n:2},
+        funcion:"Comandante de pelotón (30 a 50 efectivos). Ejecuta en el terreno las órdenes tácticas emitidas por la compañía y mantiene el contacto directo con la tropa.",
+        resp:["Comandar un pelotón en operaciones","Instruir y entrenar a la tropa a su cargo","Supervisar el mantenimiento de armamento y equipo","Reportar novedades al capitán de compañía","Aplicar disciplina y control de personal"]},
+      {name:"Subteniente", tier:"Oficial Subalterno", ins:{cat:"subalterno",n:1},
+        funcion:"Oficial subalterno en formación de mando de pelotón; primer grado con mando efectivo de tropa tras el egreso de la escuela militar, bajo tutoría de oficiales superiores.",
+        resp:["Asistir en el mando de un pelotón o sección","Aprender funciones de liderazgo bajo supervisión","Ejecutar órdenes tácticas básicas","Colaborar en la instrucción de la tropa","Cumplir funciones administrativas de la unidad"]},
+      {name:"Cadete", tier:"Alumno en formación", ins:{cat:"alumno",n:0},
+        funcion:"Alumno en formación militar para oficial, matriculado en la Escuela Superior Militar. Aún no ejerce mando de tropa, pero desarrolla las bases académicas, físicas y disciplinarias de su carrera.",
+        resp:["Cursar la formación académica y militar en la escuela","Cumplir con el régimen disciplinario institucional","Participar en prácticas y maniobras de instrucción","Desarrollar aptitudes físicas y de liderazgo","Prepararse para asumir el grado de Subteniente"]},
+      {name:"Suboficial Mayor", tier:"Suboficial", ins:{cat:"suboficial",n:3},
+        funcion:"Grado más alto de la tropa terrestre. Actúa como principal enlace entre la oficialidad y el personal de tropa, asesora al comandante de unidad en disciplina, bienestar y tradición militar, y supervisa la formación de los sargentos.",
+        resp:["Asesorar al comandante de unidad en asuntos de tropa","Supervisar la formación y desempeño de los sargentos","Velar por la disciplina y el bienestar general de la tropa","Coordinar actos protocolarios y de tradición militar","Servir de enlace entre la oficialidad y el personal de tropa"]},
+      {name:"Suboficial Primero", tier:"Suboficial", ins:{cat:"suboficial",n:2},
+        funcion:"Suboficial de alta jerarquía a cargo de la administración y disciplina de una subunidad. Apoya al suboficial mayor y supervisa directamente a los sargentos en tareas de instrucción y control de personal.",
+        resp:["Administrar el personal de tropa de la subunidad","Supervisar el cumplimiento de horarios e instrucción","Controlar el estado de armamento, equipo y pañoles","Apoyar al suboficial mayor en tareas de coordinación","Evaluar el desempeño de los sargentos a su cargo"]},
+      {name:"Suboficial Segundo", tier:"Suboficial", ins:{cat:"suboficial",n:1},
+        funcion:"Suboficial que asume funciones técnicas y administrativas especializadas dentro de la compañía o batallón, supervisando el cumplimiento de procedimientos y el mantenimiento de registros de la tropa.",
+        resp:["Ejecutar labores técnicas y administrativas especializadas","Supervisar registros y control documental de la tropa","Verificar el cumplimiento de procedimientos internos","Apoyar la coordinación logística de la subunidad","Reportar novedades administrativas al mando superior"]},
+      {name:"Sargento Primero", tier:"Tropa", ins:{cat:"tropa",n:4},
+        funcion:"Sargento de mayor experiencia dentro de la sección o pelotón. Coordina a los demás sargentos y cabos, supervisa la instrucción avanzada de la tropa y asume el control del pelotón en ausencia del oficial subalterno.",
+        resp:["Coordinar el trabajo de sargentos y cabos subordinados","Supervisar la instrucción avanzada de la tropa","Asumir el control del pelotón en ausencia del oficial","Controlar el estado del armamento y equipo del pelotón","Reportar el estado operativo al oficial subalterno"]},
+      {name:"Sargento Segundo", tier:"Tropa", ins:{cat:"tropa",n:3},
+        funcion:"Suboficial de tropa que asiste al oficial subalterno en el mando directo de la sección o escuadra. Supervisa la disciplina, el aseo, el estado del equipo y el entrenamiento básico de los soldados a su cargo.",
+        resp:["Supervisar la disciplina y el aseo de la escuadra o sección","Instruir a los soldados en tareas básicas de combate y mantenimiento","Controlar el estado del armamento y equipo asignado","Reportar novedades al oficial subalterno a cargo","Apoyar la ejecución de guardias y rondas de seguridad"]},
+      {name:"Cabo Primero", tier:"Tropa", ins:{cat:"tropa",n:2},
+        funcion:"Jefe de escuadra con mando directo sobre un grupo reducido de soldados. Responde ante el sargento por el cumplimiento de tareas asignadas y por el orden dentro de su grupo.",
+        resp:["Comandar una escuadra reducida de soldados","Verificar el cumplimiento de órdenes de instrucción diaria","Supervisar el orden y la limpieza de las instalaciones","Apoyar al sargento en tareas de control de personal","Ejecutar guardias y actividades de seguridad interna"]},
+      {name:"Cabo Segundo", tier:"Tropa", ins:{cat:"tropa",n:1},
+        funcion:"Jefe de escuadra en formación; apoya al cabo primero en la supervisión de un grupo pequeño de soldados durante instrucción, guardias y operaciones básicas de rutina.",
+        resp:["Asistir al cabo primero en la supervisión de la escuadra","Colaborar en la instrucción básica de los soldados","Verificar el estado del equipo individual de la tropa","Cumplir funciones de guardia y vigilancia","Reportar novedades menores a sus superiores inmediatos"]},
+      {name:"Soldado", tier:"Tropa", ins:{cat:"tropa",n:0},
+        funcion:"Grado base de la tropa terrestre. Ejecuta las órdenes directas de sus superiores en instrucción, guardia y operaciones de campo, formando la base operativa del Ejército.",
+        resp:["Cumplir las órdenes directas de sus superiores","Participar en instrucción física y militar diaria","Realizar guardias, rondas y tareas de seguridad","Mantener en buen estado su armamento y equipo personal","Colaborar en labores de mantenimiento y logística básica"]}
+    ]
+  },
+  armada: {
+    label: "Fuerza Naval",
+    color: "#2e6ba8", colorDk: "#17324f",
+    ranks: [
+      {name:"Almirante", tier:"Oficial General", ins:{cat:"general",n:3},
+        funcion:"Máxima autoridad naval de la Armada. Dirige la totalidad de la fuerza naval, define la estrategia marítima nacional y representa a la institución ante el Mando Conjunto y organismos internacionales.",
+        resp:["Dirigir la estrategia naval nacional","Asesorar al mando conjunto en asuntos navales","Supervisar la doctrina y modernización naval","Representar a la Armada ante el Estado y organismos internacionales","Administrar los recursos de más alto nivel de la fuerza naval"]},
+      {name:"Vicealmirante", tier:"Oficial General", ins:{cat:"general",n:2},
+        funcion:"Comandante de una zona naval o gran unidad naval. Coordina simultáneamente varios comandos y zonas, articulando la estrategia marítima a nivel regional.",
+        resp:["Planificar operaciones navales de gran escala","Coordinar zonas y comandos navales subordinados","Supervisar el cumplimiento de directivas del alto mando","Gestionar el desarrollo de oficiales superiores","Evaluar la capacidad operativa de la flota"]},
+      {name:"Contraalmirante", tier:"Oficial General", ins:{cat:"general",n:1},
+        funcion:"Comandante de flotilla o escuadra naval. Traduce las directrices del alto mando en órdenes operativas para los buques bajo su jurisdicción.",
+        resp:["Dirigir el entrenamiento y alistamiento de la flotilla","Ejecutar órdenes operativas del mando superior","Administrar la logística de la escuadra","Supervisar a los comandantes de buque","Velar por la disciplina y el bienestar del personal naval"]},
+      {name:"Capitán de Navío", tier:"Oficial Superior", ins:{cat:"superior",n:3},
+        funcion:"Comandante de buque mayor o de base naval. Es responsable integral de la nave, su tripulación, el mantenimiento técnico y el cumplimiento de la misión asignada.",
+        resp:["Comandar un buque de guerra principal","Planificar operaciones tácticas navales","Supervisar la instrucción de oficiales subalternos","Administrar el presupuesto y la logística del buque","Reportar el estado operativo al mando superior"]},
+      {name:"Capitán de Fragata", tier:"Oficial Superior", ins:{cat:"superior",n:2},
+        funcion:"Segundo comandante de buque o jefe de departamento naval. Asume el mando en ausencia del comandante titular y supervisa divisiones técnicas a bordo.",
+        resp:["Apoyar en la conducción del buque","Comandar unidades menores o divisiones a bordo","Coordinar la instrucción táctica de la tripulación","Supervisar la disciplina a bordo","Elaborar planes operativos navales"]},
+      {name:"Capitán de Corbeta", tier:"Oficial Superior", ins:{cat:"superior",n:1},
+        funcion:"Comandante de buque menor (corbeta o patrullera). Dirige unidades de menor tonelaje enfocadas en vigilancia costera, patrullaje y operaciones rápidas.",
+        resp:["Comandar una corbeta o unidad naval menor","Coordinar la logística y el abastecimiento del buque","Supervisar a los tenientes de navío","Planificar ejercicios de navegación y combate","Controlar el cumplimiento de protocolos de seguridad naval"]},
+      {name:"Teniente de Navío", tier:"Oficial Subalterno", ins:{cat:"subalterno",n:3},
+        funcion:"Oficial de guardia y jefe de departamento a bordo. Dirige una división técnica u operativa del buque y ejecuta maniobras y guardias de navegación.",
+        resp:["Comandar una división o departamento a bordo","Dirigir el entrenamiento de la tripulación subordinada","Administrar el equipo y los sistemas del buque","Evaluar el desempeño de oficiales subalternos","Ejecutar maniobras y guardias de navegación"]},
+      {name:"Teniente de Fragata", tier:"Oficial Subalterno", ins:{cat:"subalterno",n:2},
+        funcion:"Oficial de división a bordo. Comanda una sección o guardia de navegación e instruye directamente a la tripulación bajo su responsabilidad.",
+        resp:["Comandar una sección o guardia de navegación","Instruir a la tripulación a su cargo","Supervisar el mantenimiento de equipos navales","Reportar novedades al oficial superior","Aplicar disciplina y control del personal"]},
+      {name:"Alférez de Fragata", tier:"Oficial Subalterno", ins:{cat:"subalterno",n:1},
+        funcion:"Oficial subalterno en formación de mando naval; primer grado con responsabilidades operativas a bordo tras egresar de la escuela naval.",
+        resp:["Asistir en el mando de una sección a bordo","Aprender funciones de liderazgo naval bajo supervisión","Ejecutar órdenes básicas de maniobra","Colaborar en la instrucción de la tripulación","Cumplir funciones administrativas del buque"]},
+      {name:"Guardiamarina", tier:"Alumno en formación", ins:{cat:"alumno",n:0},
+        funcion:"Alumno en formación para oficial naval, matriculado en la Escuela Naval. Desarrolla las competencias académicas y náuticas necesarias antes de asumir mando a bordo.",
+        resp:["Cursar la formación académica y naval en la escuela","Cumplir con el régimen disciplinario institucional","Participar en prácticas de navegación y maniobras","Desarrollar aptitudes físicas y de liderazgo naval","Prepararse para asumir el grado de Alférez de Fragata"]},
+      {name:"Suboficial Mayor", tier:"Suboficial", ins:{cat:"suboficial",n:3},
+        funcion:"Grado más alto de la tropa naval. Actúa como principal enlace entre la oficialidad y la dotación, asesora al comandante de buque en disciplina, bienestar y tradición naval, y supervisa la formación de los sargentos a bordo.",
+        resp:["Asesorar al comandante de buque en asuntos de la dotación","Supervisar la formación y desempeño de los sargentos","Velar por la disciplina y el bienestar de la dotación","Coordinar actos protocolarios y de tradición naval","Servir de enlace entre la oficialidad y la marinería"]},
+      {name:"Suboficial Primero", tier:"Suboficial", ins:{cat:"suboficial",n:2},
+        funcion:"Suboficial de alta jerarquía a cargo de la administración y disciplina de un departamento a bordo. Apoya al suboficial mayor y supervisa directamente a los sargentos en tareas de instrucción y control de personal.",
+        resp:["Administrar el personal de la dotación de su departamento","Supervisar el cumplimiento de horarios e instrucción a bordo","Controlar el estado de equipo y pañoles del departamento","Apoyar al suboficial mayor en tareas de coordinación","Evaluar el desempeño de los sargentos a su cargo"]},
+      {name:"Suboficial Segundo", tier:"Suboficial", ins:{cat:"suboficial",n:1},
+        funcion:"Suboficial que asume funciones técnicas y administrativas especializadas dentro de un departamento del buque, supervisando el cumplimiento de procedimientos y el mantenimiento de registros de la dotación.",
+        resp:["Ejecutar labores técnicas y administrativas especializadas","Supervisar registros y control documental de la dotación","Verificar el cumplimiento de procedimientos internos a bordo","Apoyar la coordinación logística del departamento","Reportar novedades administrativas al mando superior"]},
+      {name:"Sargento Primero", tier:"Tropa", ins:{cat:"tropa",n:4},
+        funcion:"Sargento de mayor experiencia dentro de una guardia o división a bordo. Coordina a los demás sargentos y cabos, supervisa la instrucción avanzada de la marinería y asume el control de la guardia en ausencia del oficial subalterno.",
+        resp:["Coordinar el trabajo de sargentos y cabos subordinados","Supervisar la instrucción avanzada de la marinería","Asumir el control de la guardia en ausencia del oficial","Controlar el estado del equipo y armamento de la división","Reportar el estado operativo al oficial subalterno"]},
+      {name:"Sargento Segundo", tier:"Tropa", ins:{cat:"tropa",n:3},
+        funcion:"Suboficial de tropa naval que asiste al oficial subalterno en el mando directo de una guardia o dotación reducida. Supervisa la disciplina y el mantenimiento básico a bordo.",
+        resp:["Supervisar la disciplina y el aseo de la dotación a su cargo","Instruir a los marineros en tareas básicas de a bordo","Controlar el estado del equipo y pañoles asignados","Reportar novedades al oficial subalterno de guardia","Apoyar la ejecución de guardias y rondas de seguridad"]},
+      {name:"Cabo Primero", tier:"Tropa", ins:{cat:"tropa",n:2},
+        funcion:"Jefe de un grupo reducido de marineros dentro de un departamento del buque. Responde ante el sargento por el cumplimiento de tareas de mantenimiento y guardia.",
+        resp:["Comandar un grupo reducido de marineros","Verificar el cumplimiento de tareas de mantenimiento diario","Supervisar el orden en pañoles y áreas comunes","Apoyar al sargento en el control de personal","Ejecutar guardias y actividades de seguridad a bordo"]},
+      {name:"Cabo Segundo", tier:"Tropa", ins:{cat:"tropa",n:1},
+        funcion:"Grado de tropa en formación de mando; apoya al cabo primero en la supervisión de un grupo pequeño de marineros durante instrucción y tareas rutinarias.",
+        resp:["Asistir al cabo primero en la supervisión del grupo","Colaborar en la instrucción básica de los marineros","Verificar el estado del equipo individual asignado","Cumplir funciones de guardia y vigilancia a bordo","Reportar novedades menores a sus superiores inmediatos"]},
+      {name:"Marinero", tier:"Tropa", ins:{cat:"tropa",n:0},
+        funcion:"Grado base de la tropa naval. Ejecuta las órdenes directas de sus superiores en maniobras, guardias y mantenimiento, formando la base operativa de la dotación.",
+        resp:["Cumplir las órdenes directas de sus superiores a bordo","Participar en instrucción física y náutica diaria","Realizar guardias, rondas y tareas de seguridad","Mantener en buen estado su equipo personal y de a bordo","Colaborar en labores de mantenimiento y limpieza del buque"]}
+    ]
+  },
+  aerea: {
+    label: "Fuerza Aérea",
+    color: "#4a9fd6", colorDk: "#204a63",
+    ranks: [
+      {name:"General del Aire", tier:"Oficial General", ins:{cat:"general",n:3},
+        funcion:"Máxima autoridad de la Fuerza Aérea. Dirige la totalidad del componente aeroespacial, define la estrategia aérea nacional y representa a la institución ante el Mando Conjunto.",
+        resp:["Dirigir la estrategia aérea nacional","Asesorar al mando conjunto en asuntos aeroespaciales","Supervisar la doctrina y modernización de la fuerza aérea","Representar a la institución ante el Estado y el exterior","Administrar los recursos de más alto nivel de la fuerza aérea"]},
+      {name:"Teniente General", tier:"Oficial General", ins:{cat:"general",n:2},
+        funcion:"Comandante de una gran unidad aérea (ala o comando aéreo). Coordina simultáneamente varias alas y comandos, articulando la estrategia aérea regional.",
+        resp:["Planificar operaciones aéreas de gran escala","Coordinar alas y comandos subordinados","Supervisar el cumplimiento de directivas del alto mando","Gestionar el desarrollo de oficiales superiores","Evaluar la capacidad operativa de las flotas aéreas"]},
+      {name:"Brigadier General", tier:"Oficial General", ins:{cat:"general",n:1},
+        funcion:"Comandante de ala o base aérea. Traduce las directrices del alto mando en órdenes operativas concretas y sostiene el alistamiento permanente de la base.",
+        resp:["Dirigir el entrenamiento y alistamiento del ala","Ejecutar órdenes operativas del mando superior","Administrar la logística de la base aérea","Supervisar a los comandantes de escuadrón","Velar por la disciplina y el bienestar del personal"]},
+      {name:"Coronel", tier:"Oficial Superior", ins:{cat:"superior",n:3},
+        funcion:"Comandante de escuadrón o grupo aéreo / jefe de estado mayor. Dirige las operaciones de vuelo y mantenimiento de su unidad, respondiendo por su operatividad integral.",
+        resp:["Comandar un grupo o escuadrón aéreo","Planificar y ejecutar operaciones tácticas aéreas","Supervisar la instrucción de oficiales subalternos","Administrar el presupuesto y la logística de la unidad","Reportar el estado operativo al mando superior"]},
+      {name:"Teniente Coronel", tier:"Oficial Superior", ins:{cat:"superior",n:2},
+        funcion:"Segundo comandante de escuadrón o jefe de sección de vuelo. Asume el mando en ausencia del comandante titular y coordina la instrucción táctica de pilotos.",
+        resp:["Apoyar en la conducción del escuadrón","Comandar una sección de vuelo","Coordinar la instrucción táctica de pilotos y personal técnico","Supervisar la disciplina de las unidades subordinadas","Elaborar planes operativos aéreos"]},
+      {name:"Mayor", tier:"Oficial Superior", ins:{cat:"superior",n:1},
+        funcion:"Jefe de escuadrilla o de estado mayor de unidad aérea. Supervisa la logística, el mantenimiento de aeronaves y el entrenamiento de los capitanes bajo su mando.",
+        resp:["Comandar o asistir en el mando de una escuadrilla","Coordinar la logística y el mantenimiento de aeronaves","Supervisar a los capitanes de vuelo","Planificar ejercicios de entrenamiento aéreo","Controlar el cumplimiento de protocolos de seguridad de vuelo"]},
+      {name:"Capitán", tier:"Oficial Subalterno", ins:{cat:"subalterno",n:3},
+        funcion:"Piloto al mando / comandante de aeronave. Es responsable directo de la misión de vuelo, la tripulación y el cumplimiento de los protocolos de seguridad aérea.",
+        resp:["Comandar una aeronave o patrulla aérea","Planificar y dirigir misiones de vuelo","Administrar los recursos y el equipo de la unidad de vuelo","Evaluar el desempeño de tenientes y subtenientes","Ejecutar órdenes tácticas aéreas"]},
+      {name:"Teniente", tier:"Oficial Subalterno", ins:{cat:"subalterno",n:2},
+        funcion:"Piloto o especialista al mando de una sección. Instruye y supervisa directamente al personal técnico y de vuelo a su cargo.",
+        resp:["Comandar una sección de vuelo o técnica","Instruir y entrenar al personal a su cargo","Supervisar el mantenimiento de aeronaves y equipo","Reportar novedades al comandante de escuadrón","Aplicar disciplina y control de personal"]},
+      {name:"Subteniente", tier:"Oficial Subalterno", ins:{cat:"subalterno",n:1},
+        funcion:"Oficial subalterno en formación de mando aéreo; primer grado con responsabilidades operativas tras egresar de la escuela de aviación.",
+        resp:["Asistir en el mando de una sección aérea","Aprender funciones de liderazgo bajo supervisión","Ejecutar órdenes tácticas básicas de vuelo","Colaborar en la instrucción del personal","Cumplir funciones administrativas de la unidad"]},
+      {name:"Cadete", tier:"Alumno en formación", ins:{cat:"alumno",n:0},
+        funcion:"Alumno en formación militar para oficial aéreo, matriculado en la Escuela Superior Militar de Aviación. Desarrolla las bases académicas y aeronáuticas de su carrera.",
+        resp:["Cursar la formación académica y aeronáutica en la escuela","Cumplir con el régimen disciplinario institucional","Participar en prácticas de vuelo y maniobras","Desarrollar aptitudes físicas y de liderazgo","Prepararse para asumir el grado de Subteniente"]},
+      {name:"Suboficial Mayor", tier:"Suboficial", ins:{cat:"suboficial",n:3},
+        funcion:"Grado más alto de la tropa aérea. Actúa como principal enlace entre la oficialidad y el personal técnico y de apoyo, asesora al comandante de base en disciplina, bienestar y tradición institucional, y supervisa la formación de los sargentos.",
+        resp:["Asesorar al comandante de base en asuntos de tropa","Supervisar la formación y desempeño de los sargentos","Velar por la disciplina y el bienestar del personal de tropa","Coordinar actos protocolarios y de tradición institucional","Servir de enlace entre la oficialidad y el personal de tropa"]},
+      {name:"Suboficial Primero", tier:"Suboficial", ins:{cat:"suboficial",n:2},
+        funcion:"Suboficial de alta jerarquía a cargo de la administración y disciplina de una sección técnica o de escuadrón. Apoya al suboficial mayor y supervisa directamente a los sargentos en instrucción y control de personal.",
+        resp:["Administrar el personal de tropa de la sección","Supervisar el cumplimiento de horarios e instrucción","Controlar el estado de equipo y herramientas asignadas","Apoyar al suboficial mayor en tareas de coordinación","Evaluar el desempeño de los sargentos a su cargo"]},
+      {name:"Suboficial Segundo", tier:"Suboficial", ins:{cat:"suboficial",n:1},
+        funcion:"Suboficial que asume funciones técnicas y administrativas especializadas dentro del escuadrón, supervisando el cumplimiento de procedimientos de mantenimiento y el registro del personal de tropa.",
+        resp:["Ejecutar labores técnicas y administrativas especializadas","Supervisar registros y control documental de la tropa","Verificar el cumplimiento de procedimientos de mantenimiento","Apoyar la coordinación logística de la sección","Reportar novedades administrativas al mando superior"]},
+      {name:"Sargento Primero", tier:"Tropa", ins:{cat:"tropa",n:4},
+        funcion:"Sargento de mayor experiencia dentro de la sección técnica o de apoyo. Coordina a los demás sargentos y cabos, supervisa la instrucción avanzada del personal y asume el control de la sección en ausencia del oficial subalterno.",
+        resp:["Coordinar el trabajo de sargentos y cabos subordinados","Supervisar la instrucción avanzada del personal de tropa","Asumir el control de la sección en ausencia del oficial","Controlar el estado del equipo técnico de la sección","Reportar el estado operativo al oficial subalterno"]},
+      {name:"Sargento Segundo", tier:"Tropa", ins:{cat:"tropa",n:3},
+        funcion:"Suboficial de tropa que asiste al oficial subalterno en el mando directo de una sección técnica o de apoyo. Supervisa la disciplina y el mantenimiento básico de equipo aéreo.",
+        resp:["Supervisar la disciplina y el aseo de la sección a su cargo","Instruir al personal en tareas básicas técnicas y de apoyo aéreo","Controlar el estado del equipo y herramientas asignadas","Reportar novedades al oficial subalterno a cargo","Apoyar la ejecución de guardias y rondas de seguridad en base"]},
+      {name:"Cabo Primero", tier:"Tropa", ins:{cat:"tropa",n:2},
+        funcion:"Jefe de un grupo reducido de personal de tropa dentro de un escuadrón. Responde ante el sargento por el cumplimiento de tareas de mantenimiento y guardia en base.",
+        resp:["Comandar un grupo reducido de personal de tropa","Verificar el cumplimiento de tareas de mantenimiento diario","Supervisar el orden en hangares y áreas comunes","Apoyar al sargento en el control de personal","Ejecutar guardias y actividades de seguridad en base"]},
+      {name:"Cabo Segundo", tier:"Tropa", ins:{cat:"tropa",n:1},
+        funcion:"Grado de tropa en formación de mando; apoya al cabo primero en la supervisión de un grupo pequeño de soldados durante instrucción y tareas rutinarias en base aérea.",
+        resp:["Asistir al cabo primero en la supervisión del grupo","Colaborar en la instrucción básica del personal de tropa","Verificar el estado del equipo individual asignado","Cumplir funciones de guardia y vigilancia en base","Reportar novedades menores a sus superiores inmediatos"]},
+      {name:"Soldado", tier:"Tropa", ins:{cat:"tropa",n:0},
+        funcion:"Grado base de la tropa aérea. Ejecuta las órdenes directas de sus superiores en instrucción, guardia y tareas de apoyo en base, formando la base operativa de la institución.",
+        resp:["Cumplir las órdenes directas de sus superiores","Participar en instrucción física y militar diaria","Realizar guardias, rondas y tareas de seguridad en base","Mantener en buen estado su equipo personal asignado","Colaborar en labores de mantenimiento y apoyo logístico"]}
+    ]
+  }
+};
+
+let currentForce = "ejercito";
+let selectedIdx = null;
+
+function lerpColor(a, b, t){
+  const ah = a.replace('#',''), bh = b.replace('#','');
+  const ar = parseInt(ah.substring(0,2),16), ag = parseInt(ah.substring(2,4),16), ab = parseInt(ah.substring(4,6),16);
+  const br = parseInt(bh.substring(0,2),16), bg = parseInt(bh.substring(2,4),16), bb = parseInt(bh.substring(4,6),16);
+  const r = Math.round(ar + (br-ar)*t), g = Math.round(ag + (bg-ag)*t), bch = Math.round(ab + (bb-ab)*t);
+  return `rgb(${r},${g},${bch})`;
+}
+
+function polar(cx, cy, r, angleDeg){
+  const a = (angleDeg-90) * Math.PI/180;
+  return [cx + r*Math.cos(a), cy + r*Math.sin(a)];
+}
+
+function arcPath(cx, cy, rOuter, rInner, a0, a1){
+  const [x0,y0] = polar(cx,cy,rOuter,a0);
+  const [x1,y1] = polar(cx,cy,rOuter,a1);
+  const [x2,y2] = polar(cx,cy,rInner,a1);
+  const [x3,y3] = polar(cx,cy,rInner,a0);
+  const large = (a1-a0) > 180 ? 1 : 0;
+  return `M ${x0} ${y0} A ${rOuter} ${rOuter} 0 ${large} 1 ${x1} ${y1} L ${x2} ${y2} A ${rInner} ${rInner} 0 ${large} 0 ${x3} ${y3} Z`;
+}
+
+function starPoints(cx,cy,r){
+  let pts=[];
+  for(let i=0;i<10;i++){
+    const rad = i%2===0 ? r : r*0.44;
+    const ang = (-90 + i*36) * Math.PI/180;
+    pts.push(`${(cx+rad*Math.cos(ang)).toFixed(1)},${(cy+rad*Math.sin(ang)).toFixed(1)}`);
+  }
+  return pts.join(' ');
+}
+
+// Insignias SVG propias, inspiradas en el diseño real de charreteras/hombreras de cada fuerza del Ecuador
+function wingIcon(cx,cy,color){
+  return `<g transform="translate(${cx},${cy})">
+    <circle r="6.5" fill="none" stroke="${color}" stroke-width="1.5"/>
+    <path d="M-15 2 Q-5 -7 0 0 Q5 -7 15 2" fill="none" stroke="${color}" stroke-width="1.6" stroke-linecap="round"/>
+  </g>`;
+}
+function anchorIcon(cx,cy,scale,color){
+  return `<g transform="translate(${cx},${cy}) scale(${scale})">
+    <circle cx="0" cy="-8" r="3" fill="none" stroke="${color}" stroke-width="1.4"/>
+    <line x1="0" y1="-5" x2="0" y2="11" stroke="${color}" stroke-width="1.7"/>
+    <path d="M-8 6 Q0 15 8 6" fill="none" stroke="${color}" stroke-width="1.7" fill="none"/>
+    <line x1="-6" y1="-1" x2="6" y2="-1" stroke="${color}" stroke-width="1.7"/>
+  </g>`;
+}
+
+// ---- FUERZA TERRESTRE: hombrera azul marino, ribete rojo y filo dorado (como las charreteras del Ejército) ----
+function ejercitoInsignia(cat, n, gid){
+  const gold = "#c9a24d", red = "#8a1f2b", chevRed = "#c22233";
+  const frame = (fill)=>`
+    <defs><linearGradient id="${gid}" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="${fill}"/><stop offset="100%" stop-color="#0b1420"/>
+    </linearGradient></defs>
+    <path d="M10 14 H74 A24 24 0 1 1 74 66 H10 Z" fill="url(#${gid})" stroke="${red}" stroke-width="3.4"/>
+    <path d="M14 18 H72 A20 20 0 1 1 72 62 H14 Z" fill="none" stroke="${gold}" stroke-width="1.1" opacity=".8"/>`;
+
+  if(cat === "general"){
+    let s = frame("#1a2c4d");
+    s += `<path d="M22 30 L30 25 L38 30 V43 Q30 51 22 43 Z" fill="${gold}" stroke="${red}" stroke-width="1"/>`;
+    for(let i=0;i<n;i++) s += `<polygon points="${starPoints(52+i*13,40,7.2)}" fill="${gold}" stroke="#0b1420" stroke-width="1"/>`;
+    return s;
+  }
+  if(cat === "superior"){
+    let s = frame("#1a2c4d");
+    for(let x=14;x<73;x+=6) s += `<line x1="${x}" y1="18" x2="${x+9}" y2="62" stroke="${gold}" stroke-width="2.1" opacity=".55" stroke-linecap="round"/>`;
+    for(let i=0;i<n;i++) s += `<polygon points="${starPoints(40+i*14,42,7.2)}" fill="#0b1420" stroke="${gold}" stroke-width="1.3"/>`;
+    return s;
+  }
+  if(cat === "subalterno"){
+    let s = frame("#1a2c4d");
+    for(let x=16;x<70;x+=10){
+      s += `<path d="M${x} 22 L${x+5} 28 L${x+10} 22" stroke="${gold}" stroke-width="1.5" fill="none" opacity=".65"/>`;
+      s += `<path d="M${x} 36 L${x+5} 42 L${x+10} 36" stroke="${gold}" stroke-width="1.5" fill="none" opacity=".65"/>`;
+      s += `<path d="M${x} 50 L${x+5} 56 L${x+10} 50" stroke="${gold}" stroke-width="1.5" fill="none" opacity=".65"/>`;
+    }
+    for(let i=0;i<n;i++) s += `<polygon points="${starPoints(40+i*14,42,6.8)}" fill="#dfe4ea" stroke="${red}" stroke-width="1"/>`;
+    return s;
+  }
+  if(cat === "alumno"){
+    let s = `
+      <defs><linearGradient id="${gid}" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#1a2c4d"/><stop offset="100%" stop-color="#0b1420"/>
+      </linearGradient></defs>
+      <path d="M10 14 H74 A24 24 0 1 1 74 66 H10 Z" fill="url(#${gid})" stroke="${gold}" stroke-width="2.3" stroke-dasharray="5 4"/>`;
+    s += `<polygon points="${starPoints(42,40,10)}" fill="none" stroke="${gold}" stroke-width="2"/>`;
+    return s;
+  }
+  // suboficial (galones blancos + escudo) y tropa (galones rojos, sin escudo)
+  let s = `<rect x="10" y="14" width="64" height="52" rx="20" fill="#16233f" stroke="${gold}" stroke-width="2.4"/>`;
+  if(cat === "suboficial"){
+    s += `<circle cx="24" cy="40" r="8.5" fill="none" stroke="${gold}" stroke-width="1.6"/>`;
+    s += `<path d="M20 40 L24 35 L28 40 L24 45 Z" fill="${gold}"/>`;
+    for(let i=0;i<n;i++){
+      const x = 40 + i*10;
+      s += `<path d="M${x} 22 L${x+9} 40 L${x} 58" stroke="#e8e8e8" stroke-width="3.3" fill="none" stroke-linecap="round"/>`;
+    }
+  } else {
+    if(n === 0){
+      s += `<rect x="36" y="22" width="6" height="36" fill="${chevRed}"/>`;
+    } else {
+      for(let i=0;i<n;i++){
+        const x = 30 + i*10;
+        s += `<path d="M${x} 22 L${x+9} 40 L${x} 58" stroke="${chevRed}" stroke-width="3.3" fill="none" stroke-linecap="round"/>`;
+      }
+    }
+  }
+  return s;
+}
+
+// ---- FUERZA NAVAL: hombrera en forma de banderín/galón dorado o azul con anclas y aros (como las mangas de la Armada) ----
+function armadaInsignia(cat, n, gid){
+  const gold = "#c9a24d";
+  if(cat === "general"){
+    let s = `
+      <defs><linearGradient id="${gid}" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#e8c873"/><stop offset="55%" stop-color="${gold}"/><stop offset="100%" stop-color="#8a7238"/>
+      </linearGradient></defs>
+      <path d="M30 14 H74 A20 20 0 1 1 74 62 H30 L14 38 Z" fill="url(#${gid})" stroke="#17324f" stroke-width="2.6"/>`;
+    s += anchorIcon(58,32,1,"#17324f");
+    for(let i=0;i<n;i++) s += `<polygon points="${starPoints(38+i*13,54,6)}" fill="#17324f" stroke="#8a7238" stroke-width="1"/>`;
+    return s;
+  }
+  if(cat === "superior" || cat === "subalterno"){
+    let s = `
+      <defs><linearGradient id="${gid}" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#2e6ba8"/><stop offset="100%" stop-color="#0e1e30"/>
+      </linearGradient></defs>
+      <path d="M30 14 H74 A20 20 0 1 1 74 62 H30 L14 38 Z" fill="url(#${gid})" stroke="${gold}" stroke-width="2.6"/>`;
+    for(let i=0;i<n;i++) s += `<circle cx="55" cy="${50-i*10}" r="6" fill="none" stroke="${gold}" stroke-width="2.3"/>`;
+    s += `<polygon points="${starPoints(55,20,6)}" fill="${gold}" stroke="#17324f" stroke-width="1"/>`;
+    return s;
+  }
+  if(cat === "alumno"){
+    let s = `
+      <defs><linearGradient id="${gid}" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#17324f"/><stop offset="100%" stop-color="#0a1622"/>
+      </linearGradient></defs>
+      <path d="M30 14 H74 A20 20 0 1 1 74 62 H30 L14 38 Z" fill="url(#${gid})" stroke="${gold}" stroke-width="2.1" stroke-dasharray="5 4"/>`;
+    s += `<polygon points="${starPoints(50,38,10)}" fill="none" stroke="${gold}" stroke-width="2"/>`;
+    return s;
+  }
+  if(cat === "suboficial"){
+    let s = `<path d="M20 14 H74 A20 20 0 1 1 74 62 H20 L8 38 Z" fill="#0e1e30" stroke="${gold}" stroke-width="2.5"/>`;
+    for(let i=0;i<n;i++){
+      const y = 24 + i*12;
+      s += `<path d="M30 ${y} L52 ${y+8} L30 ${y+16}" stroke="${gold}" stroke-width="3.2" fill="none" stroke-linecap="round"/>`;
+    }
+    return s;
+  }
+  // tropa naval: roundel circular (como los distintivos de marinero/cabo)
+  let s = `<circle cx="52" cy="40" r="26" fill="#0e1e30" stroke="${gold}" stroke-width="2.5"/>`;
+  s += `<circle cx="52" cy="40" r="17" fill="none" stroke="#c22233" stroke-width="2.3"/>`;
+  if(n === 0){
+    s += anchorIcon(52,40,0.85,gold);
+  } else {
+    for(let i=0;i<n;i++) s += `<circle cx="52" cy="40" r="${9-i*4}" fill="none" stroke="${gold}" stroke-width="2"/>`;
+  }
+  return s;
+}
+
+// ---- FUERZA AÉREA: hombrera azul, filo dorado y ala/estrellas (como las charreteras de la FAE) ----
+function aereaInsignia(cat, n, gid){
+  const gold = "#c9a24d";
+  const frame = `
+    <defs><linearGradient id="${gid}" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2f6fb0"/><stop offset="100%" stop-color="#0f2138"/>
+    </linearGradient></defs>
+    <path d="M10 14 H74 A24 24 0 1 1 74 66 H10 Z" fill="url(#${gid})" stroke="${gold}" stroke-width="2.6"/>`;
+
+  if(cat === "general" || cat === "superior" || cat === "subalterno"){
+    let s = frame;
+    s += wingIcon(58,44,gold);
+    for(let i=0;i<n;i++) s += `<polygon points="${starPoints(24+i*13,32,6.3)}" fill="#eef1ef" stroke="${gold}" stroke-width="1"/>`;
+    return s;
+  }
+  if(cat === "alumno"){
+    let s = `
+      <defs><linearGradient id="${gid}" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#0f2138"/><stop offset="100%" stop-color="#071018"/>
+      </linearGradient></defs>
+      <path d="M10 14 H74 A24 24 0 1 1 74 66 H10 Z" fill="url(#${gid})" stroke="${gold}" stroke-width="2.2" stroke-dasharray="5 4"/>`;
+    s += `<polygon points="${starPoints(42,40,10)}" fill="none" stroke="${gold}" stroke-width="2"/>`;
+    return s;
+  }
+  // suboficial y tropa: hombrera azul, galones en forma de corchete apuntando a la izquierda
+  let s = `<rect x="10" y="14" width="64" height="52" rx="20" fill="#0f2138" stroke="${gold}" stroke-width="2.5"/>`;
+  if(cat === "suboficial" && n === 3){
+    s += `<path d="M50 26 A14 14 0 1 0 50 54 A11 11 0 1 1 50 26 Z" fill="${gold}"/>`;
+    s += `<polygon points="${starPoints(50,40,5)}" fill="${gold}"/>`;
+    return s;
+  }
+  if(n === 0){
+    s += `<rect x="36" y="22" width="6" height="36" fill="${gold}"/>`;
+  } else {
+    for(let i=0;i<n;i++){
+      const x = 58 - i*9;
+      s += `<path d="M${x} 22 Q${x-9} 40 ${x} 58" stroke="${gold}" stroke-width="3.1" fill="none" stroke-linecap="round"/>`;
+    }
+  }
+  return s;
+}
+
+function insigniaSVG(rank, force, forceKey){
+  const ns = "http://www.w3.org/2000/svg";
+  const cat = rank.ins.cat, n = rank.ins.n;
+  const gid = "grad-" + cat + "-" + Math.round(Math.random()*100000);
+  let inner = "";
+  if(forceKey === "ejercito") inner = ejercitoInsignia(cat, n, gid);
+  else if(forceKey === "armada") inner = armadaInsignia(cat, n, gid);
+  else inner = aereaInsignia(cat, n, gid);
+  return `<svg viewBox="0 0 120 90" width="104" height="78" xmlns="${ns}">${inner}</svg>`;
+}
+
+function renderWheel(){
+  const svg = document.getElementById('wheel');
+  svg.innerHTML = '';
+  const force = DATA[currentForce];
+  const n = force.ranks.length;
+  const enlistedN = force.ranks.filter(r => r.ins.cat === "tropa" || r.ins.cat === "suboficial").length;
+  const oficialesN = n - enlistedN; // ultimas posiciones (tropa + suboficiales) van con color de tropa
+  const cx = 230, cy = 230, rOuter = 210, rInner = 58;
+  const step = 360/n;
+  const gap = 1.2;
+
+  const ns = "http://www.w3.org/2000/svg";
+
+  force.ranks.forEach((rank, i)=>{
+    const a0 = i*step + gap/2;
+    const a1 = (i+1)*step - gap/2;
+    let fill;
+    if(i < oficialesN){
+      const t = i/(oficialesN-1);
+      fill = lerpColor(force.colorDk, force.color, 1-t*0.55);
+    } else {
+      const tIdx = i - oficialesN;
+      const t = enlistedN>1 ? tIdx/(enlistedN-1) : 0;
+      fill = lerpColor("#3a4048", "#7c8894", t);
+    }
+    const path = document.createElementNS(ns,"path");
+    path.setAttribute("d", arcPath(cx,cy,rOuter,rInner,a0,a1));
+    path.setAttribute("fill", fill);
+    path.setAttribute("class","seg"+(selectedIdx===i?" selected":""));
+    path.setAttribute("data-idx", i);
+    path.addEventListener("click", ()=>{ selectedIdx = i; renderWheel(); renderPanel(); });
+    svg.appendChild(path);
+
+    // color de texto legible segun el brillo del segmento + contorno de refuerzo
+    const rgbMatch = fill.match(/\d+/g).map(Number);
+    const brightness = (rgbMatch[0]*299 + rgbMatch[1]*587 + rgbMatch[2]*114) / 1000;
+    const isLight = brightness > 145;
+    const textColor = isLight ? "#12181f" : "#f5f7f6";
+    const strokeColor = isLight ? "#f5f7f6" : "#12181f";
+
+    // label
+    const midAngle = (a0+a1)/2;
+    const rLabel = (rOuter+rInner)/2 + 2;
+    const [lx,ly] = polar(cx,cy,rLabel,midAngle);
+    const text = document.createElementNS(ns,"text");
+    text.setAttribute("x", lx); text.setAttribute("y", ly);
+    text.setAttribute("class","seg-label");
+    text.setAttribute("style", `fill:${textColor}; stroke:${strokeColor}; stroke-width:2.6px; stroke-linejoin:round; paint-order:stroke fill; font-weight:600;`);
+    text.setAttribute("text-anchor","middle");
+    text.setAttribute("dominant-baseline","middle");
+    const rot = midAngle > 90 && midAngle < 270 ? midAngle+180 : midAngle;
+    text.setAttribute("transform", `rotate(${rot} ${lx} ${ly})`);
+    const words = rank.name.split(" ");
+    if(rank.name.length > 13 && words.length > 1){
+      const mid = Math.ceil(words.length/2);
+      const l1 = words.slice(0,mid).join(" ");
+      const l2 = words.slice(mid).join(" ");
+      const tspan1 = document.createElementNS(ns,"tspan");
+      tspan1.setAttribute("x", lx); tspan1.setAttribute("dy","-0.3em");
+      tspan1.textContent = l1;
+      const tspan2 = document.createElementNS(ns,"tspan");
+      tspan2.setAttribute("x", lx); tspan2.setAttribute("dy","1.1em");
+      tspan2.textContent = l2;
+      text.appendChild(tspan1);
+      text.appendChild(tspan2);
+    } else {
+      text.textContent = rank.name;
+    }
+    svg.appendChild(text);
+  });
+
+  // center
+  const c1 = document.createElementNS(ns,"circle");
+  c1.setAttribute("cx",cx); c1.setAttribute("cy",cy); c1.setAttribute("r",rInner-4);
+  c1.setAttribute("fill","none"); c1.setAttribute("stroke","var(--line)"); c1.setAttribute("stroke-width","1");
+  svg.appendChild(c1);
+
+  const t1 = document.createElementNS(ns,"text");
+  t1.setAttribute("x",cx); t1.setAttribute("y",cy-6);
+  t1.setAttribute("text-anchor","middle");
+  t1.setAttribute("class","center-label");
+  t1.setAttribute("font-size","13");
+  t1.textContent = force.label;
+  svg.appendChild(t1);
+
+  const t2 = document.createElementNS(ns,"text");
+  t2.setAttribute("x",cx); t2.setAttribute("y",cy+13);
+  t2.setAttribute("text-anchor","middle");
+  t2.setAttribute("class","center-sub");
+  t2.setAttribute("font-size","10");
+  t2.textContent = `${n} grados · Oficiales y Tropa`;
+  svg.appendChild(t2);
+}
+
+function renderPanel(){
+  const panel = document.getElementById('panel');
+  if(selectedIdx===null){
+    panel.innerHTML = `<div class="empty">Haz clic en un grado de la rueda para ver su insignia, función y responsabilidades.</div>`;
+    return;
+  }
+  const force = DATA[currentForce];
+  const rank = force.ranks[selectedIdx];
+  panel.innerHTML = `
+    <div class="badge-wrap">${insigniaSVG(rank, force, currentForce)}</div>
+    <p class="rank-eyebrow">${force.label}</p>
+    <h2>${rank.name}</h2>
+    <p class="tier">${rank.tier}</p>
+    <div class="block-title">Función</div>
+    <p class="funcion">${rank.funcion}</p>
+    <div class="block-title">5 Responsabilidades</div>
+    <ol class="resp">
+      ${rank.resp.map(r=>`<li>${r}</li>`).join("")}
+    </ol>
+  `;
+}
+
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    currentForce = tab.dataset.force;
+    selectedIdx = null;
+    renderWheel();
+    renderPanel();
+  });
+});
+
+renderWheel();
+renderPanel();
+</script>
+</body>
+</html>
